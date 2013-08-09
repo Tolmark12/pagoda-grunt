@@ -17,7 +17,7 @@ module.exports = (grunt) ->
       static:
         files: ['static/*.haml']
         tasks: ['haml:index']
-      refresh:
+      refresh: # refreshes the page
         files: ['server/index.html', 'server/javascripts/*.js', 'server/stylesheets/*.css']
         options:
           livereload: true
@@ -29,7 +29,7 @@ module.exports = (grunt) ->
         files: 
           'server/javascripts/app.js' : ['app/coffee/**/*.coffee']
 
-    compass:
+    compass: # compiles scss
       app:
         options:
           debugInfo: true
@@ -39,7 +39,7 @@ module.exports = (grunt) ->
           fontsDir: 'app/fonts'
           specify: 'app/scss/main.scss'
 
-    haml:
+    haml: 
       handlebars:
         files: grunt.file.expandMapping ['app/haml/**/*.haml'], 'server/handlebars'
           ext: '.html'
@@ -47,7 +47,7 @@ module.exports = (grunt) ->
             dest + matchedSrcPath.replace('app/haml','')
       index:
         files:
-          'server/index.html' : 'static/index.haml'
+          'server/index.html' : 'server/index.haml'
 
     handlebars:
       app:
@@ -58,20 +58,34 @@ module.exports = (grunt) ->
         files : 
           'server/javascripts/handlebars-templates.js' : 'server/handlebars/**/*.html'
 
-    clean:
+    clean: # empties directories
       server: 'server'
       dist: 'dist'
 
-    connect:
+    connect: # web server
       app:
         options:
           port: 9000
           hostname: '0.0.0.0'
           base: 'server'
 
-    open:
+    open: # opens the page in your default browser
       app:
         path: 'http://0.0.0.0:9000'
 
-  grunt.registerTask 'server', ['clean:server', 'coffee', 'compass', 'haml', 'handlebars', 'connect', 'open', 'watch']
+    'string-replace' : 
+      index: 
+        options :
+          replacements : [
+            pattern : '{{body}}'
+            replacement : "<%= grunt.file.read('static/body.haml') %>"
+          ]
+        files :
+          'server/index.haml' : 'static/html.haml'
+
+
+
+  grunt.registerTask 'prepare-server', ['clean:server', 'coffee', 'compass', 'haml', 'handlebars']
+  # Call these tasks from the command line
+  grunt.registerTask 'server', ['prepare-server', 'connect', 'open', 'watch']
   grunt.registerTask 'default', ['server']
