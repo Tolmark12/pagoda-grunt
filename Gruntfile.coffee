@@ -1,7 +1,10 @@
 'use-strict'
-# require all grunt packages
+#utilties
+mountFolder = (connect, dir) ->
+  connect.static require("path").resolve(dir)
 
 module.exports = (grunt) ->
+  # require all grunt packages
   require('matchdep').filterDev('grunt-*').forEach grunt.loadNpmTasks
   grunt.initConfig
     watch:
@@ -67,9 +70,14 @@ module.exports = (grunt) ->
         options:
           port: 9000
           hostname: '0.0.0.0'
-          base: 'server'
+          middleware: (connect) ->
+            [
+              mountFolder(connect, "server")
+              mountFolder(connect, "bower_components")        
+            ]
+        
 
-    open: # opens the page in your default browser
+    open: # opens the page in the browser
       app:
         path: 'http://0.0.0.0:9000'
 
@@ -85,7 +93,7 @@ module.exports = (grunt) ->
 
 
 
-  grunt.registerTask 'prepare-server', ['clean:server', 'coffee', 'compass', 'haml', 'handlebars']
+  grunt.registerTask 'prepare-server', ['clean:server', 'coffee', 'compass', 'string-replace', 'haml', 'handlebars']
   # Call these tasks from the command line
   grunt.registerTask 'server', ['prepare-server', 'connect', 'open', 'watch']
   grunt.registerTask 'default', ['server']
