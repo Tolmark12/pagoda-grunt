@@ -4,13 +4,14 @@
 /[if IE 7 ] <html class='ie7' lang='en'>
 /[if IE 8 ] <html class='ie8' lang='en'>
 <!--[if (gte IE 9)|!(IE)]><!-->
-%html{lang: "en"}
+%html{lang: 'en'}
   <!--<![endif]-->
   
   %head
   %title New Grunt Project
 
+  %link{href: 'stylesheets/main.css', rel: 'stylesheet'}
   %body
     %h1 Add some things here
 
-
+    %script{src: 'http://localhost:35729/livereload.js'}

@@ -18,62 +18,60 @@ module.exports = (grunt) ->
         files: ['static/*.haml']
         tasks: ['haml:index']
       refresh:
-        files: ['.tmp/index.html', '.tmp/javascripts', '.tmp/stylesheets']
+        files: ['server/index.html', 'server/javascripts/*.js', 'server/stylesheets/*.css']
         options:
-          livereload: 35729
+          livereload: true
 
     coffee:
       app:
         options:
           sourceMap: true
         files: 
-          '.tmp/javascripts/app.js' : ['app/coffee/**/*.coffee']
+          'server/javascripts/app.js' : ['app/coffee/**/*.coffee']
 
     compass:
       app:
         options:
           debugInfo: true
           sassDir: 'app/scss'
-          cssDir: '.tmp/stylesheets'
+          cssDir: 'server/stylesheets'
           imagesDir: 'app/images'
           fontsDir: 'app/fonts'
           specify: 'app/scss/main.scss'
 
     haml:
       handlebars:
-        files: grunt.file.expandMapping ['app/haml/**/*.haml'], '.tmp/handlebars'
+        files: grunt.file.expandMapping ['app/haml/**/*.haml'], 'server/handlebars'
           ext: '.html'
           rename: (dest, matchedSrcPath, options) ->
             dest + matchedSrcPath.replace('app/haml','')
       index:
         files:
-          '.tmp/index.html' : 'static/index.haml'
+          'server/index.html' : 'static/index.haml'
 
     handlebars:
       app:
         options:
           namespace: 'handlebars'
           processName: (filePath) ->
-            filePath.replace /(\.tmp\/handlebars\/|\.html)/g, ''
+            filePath.replace /(server\/handlebars\/|\.html)/g, ''
         files : 
-          '.tmp/javascripts/handlebars-templates.js' : '.tmp/handlebars/**/*.html'
+          'server/javascripts/handlebars-templates.js' : 'server/handlebars/**/*.html'
 
     clean:
-      tmp: '.tmp'
+      server: 'server'
       dist: 'dist'
 
     connect:
       app:
         options:
           port: 9000
-          
-          # change this to '0.0.0.0' to access the server from outside
           hostname: '0.0.0.0'
-          base: '.tmp'
+          base: 'server'
 
     open:
       app:
         path: 'http://0.0.0.0:9000'
 
-  grunt.registerTask 'server', ['clean:tmp', 'coffee', 'compass', 'haml', 'handlebars', 'connect', 'open', 'watch']
+  grunt.registerTask 'server', ['clean:server', 'coffee', 'compass', 'haml', 'handlebars', 'connect', 'open', 'watch']
   grunt.registerTask 'default', ['server']
