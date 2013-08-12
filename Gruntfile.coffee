@@ -1,7 +1,7 @@
 'use-strict'
 #utilties
 mountFolder = (connect, dir) ->
-  connect.stage require("path").resolve(dir)
+  connect.static require("path").resolve(dir)
 
 module.exports = (grunt) ->
   # require all grunt packages
@@ -94,6 +94,11 @@ module.exports = (grunt) ->
       server: 'server'
       build: 'build'
 
+    copy:
+      app:
+        files:
+          'server/javascripts/init.js' : 'stage/init.js'
+
     connect: # web server
       app:
         options:
@@ -101,10 +106,10 @@ module.exports = (grunt) ->
           hostname: '0.0.0.0'
           middleware: (connect) ->
             [
-              # each of these folders will be mounted at the root
-              mountFolder connect, 'server'
-              mountFolder connect, 'vendor'
-              mountFolder connect, 'app' # to get images, fonts, etc.
+              # the contents of these folders are mounted at the root of the server
+              mountFolder connect, "server"
+              mountFolder connect, "vendor"
+              mountFolder connect, "app" # for images, etc
             ]
         
 
@@ -137,13 +142,12 @@ module.exports = (grunt) ->
   # ----------------------- #
   # --------- TASKS ------- #
   # ----------------------- #
-  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'copy', 'compass:server', 'string-replace', 'haml', 'handlebars']
   grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee', 'compass:build', 'string-replace', 'haml', 'handlebars']
-  grunt.registerTask 'compile-lib',    ['clean:server', 'string-replace', 'haml:index']
+  grunt.registerTask 'compile-lib',    ['clean:server', 'coffee', 'string-replace', 'haml:index']
 
   # Call these tasks from the command line
   grunt.registerTask 'server', ['compile-server', 'connect', 'open', 'watch']
   grunt.registerTask 'build',  ['compile-build', 'uglify:build', 'cssmin']
   grunt.registerTask 'lib',    ['compile-lib', 'useminPrepare', 'concat', 'uglify']
   grunt.registerTask 'default', ['server']
-  grunt.registerTask 'lib', ['useminPrepare', 'concat', 'uglify']

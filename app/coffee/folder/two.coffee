@@ -1,1 +1,5 @@
-console.log "it loaded one file deeper"
+class ClassB
+  constructor : () ->
+
+  doStuff : () ->
+    $('h1').html "Did stuff!"

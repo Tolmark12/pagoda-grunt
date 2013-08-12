@@ -1,0 +1,1 @@
+namespace.obj = new namespace.ClassA()
