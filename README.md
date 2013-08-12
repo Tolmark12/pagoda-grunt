@@ -30,6 +30,7 @@ Setup
   ```rm -rf .git``` 
 
   ```git init```
+* Remove build from .gitignore
 
 Usage
 -----
@@ -55,4 +56,4 @@ Structure
 * stage - haml and scripts that are only used in the staging environment, script should be minimal
 * vendor - 3rd party assets, should be able to get everything with bower
 
-*note - some of these directories (build, server) won't exists until you run grunt commands, because they are gitignored*
+*note - most of these directories won't exists until you run grunt commands, because they are gitignored*
