@@ -38,6 +38,9 @@ module.exports = (grunt) ->
           sourceMap: true 
         files: 
           'server/javascripts/app.js' : ['app/coffee/**/*.coffee']
+      stage:
+        files:
+          'server/javascripts/init.js' :['stage/init.coffee']
 
     compass: # scss -> css
       server:
@@ -94,11 +97,6 @@ module.exports = (grunt) ->
       server: 'server'
       build: 'build'
 
-    copy:
-      app:
-        files:
-          'server/javascripts/init.js' : 'stage/init.js'
-
     connect: # web server
       app:
         options:
@@ -142,9 +140,9 @@ module.exports = (grunt) ->
   # ----------------------- #
   # --------- TASKS ------- #
   # ----------------------- #
-  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'copy', 'compass:server', 'string-replace', 'haml', 'handlebars']
-  grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee', 'compass:build', 'string-replace', 'haml', 'handlebars']
-  grunt.registerTask 'compile-lib',    ['clean:server', 'coffee', 'string-replace', 'haml:index']
+  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-lib',    ['clean:server', 'coffee:app', 'string-replace', 'haml:index']
 
   # Call these tasks from the command line
   grunt.registerTask 'server', ['compile-server', 'connect', 'open', 'watch']
