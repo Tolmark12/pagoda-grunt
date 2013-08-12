@@ -6,6 +6,10 @@ mountFolder = (connect, dir) ->
 module.exports = (grunt) ->
   # require all grunt packages
   require('matchdep').filterDev('grunt-*').forEach grunt.loadNpmTasks
+  appName = "pagoda"
+  # --------------------------- #
+  # ---------- WATCH ---------- #
+  # --------------------------- #
   grunt.initConfig
     watch:
       coffee: 
@@ -25,24 +29,36 @@ module.exports = (grunt) ->
         options:
           livereload: true
 
-    coffee:
+    # ------------------------- #
+    # -------- COMPILE -------- #
+    # ------------------------- #
+    coffee: # coffee -> js
       app:
         options:
-          sourceMap: true
+          sourceMap: true 
         files: 
           'server/javascripts/app.js' : ['app/coffee/**/*.coffee']
 
-    compass: # compiles scss
-      app:
+    compass: # scss -> css
+      server:
         options:
-          debugInfo: true
+          debugInfo: true # source map, doesn't work currently in chrome :(
+          sassDir: 'app/scss'
+          cssDir: 'server/stylesheets'
+          imagesDir: 'app/images'
+          fontsDir: 'app/fonts'
+          specify: 'app/scss/main.scss' # import everything from here
+      build: # don't include source map
+        options:
+          debugInfo: false
           sassDir: 'app/scss'
           cssDir: 'server/stylesheets'
           imagesDir: 'app/images'
           fontsDir: 'app/fonts'
           specify: 'app/scss/main.scss'
 
-    haml: 
+
+    haml: # haml -> html
       handlebars:
         files: grunt.file.expandMapping ['app/haml/**/*.haml'], 'server/handlebars'
           ext: '.html'
@@ -52,7 +68,7 @@ module.exports = (grunt) ->
         files:
           'server/index.html' : 'server/index.haml'
 
-    handlebars:
+    handlebars: # html -> js template
       app:
         options:
           namespace: 'handlebars'
@@ -61,9 +77,22 @@ module.exports = (grunt) ->
         files : 
           'server/javascripts/handlebars-templates.js' : 'server/handlebars/**/*.html'
 
+    'string-replace' : # pastes body into the rest of the page 
+      index: 
+        options :
+          replacements : [
+            pattern : '{{body}}'
+            replacement : "<%= grunt.file.read('static/body.haml') %>"
+          ]
+        files :
+          'server/index.haml' : 'static/html.haml'
+    
+    # ----------------------- #
+    # -------- SERVER ------- #
+    # ----------------------- #
     clean: # empties directories
       server: 'server'
-      dist: 'dist'
+      build: 'build'
 
     connect: # web server
       app:
@@ -73,7 +102,7 @@ module.exports = (grunt) ->
           middleware: (connect) ->
             [
               mountFolder(connect, "server")
-              mountFolder(connect, "bower_components")        
+              mountFolder(connect, "vendor")        
             ]
         
 
@@ -81,19 +110,38 @@ module.exports = (grunt) ->
       app:
         path: 'http://0.0.0.0:9000'
 
-    'string-replace' : 
-      index: 
-        options :
-          replacements : [
-            pattern : '{{body}}'
-            replacement : "<%= grunt.file.read('static/body.haml') %>"
-          ]
-        files :
-          'server/index.haml' : 'static/html.haml'
+    # -------------------------- #
+    # ---------- BUILD --------- #
+    # -------------------------- #
+    uglify:
+      build:
+        files: [
+          src : ['server/javascripts/app.js', 'server/javascripts/handlebars-templates.js']
+          dest: "build/#{appName}.min.js"
+        ]
 
+    cssmin:
+      build:
+        files: [
+          src : 'server/stylesheets/main.css'
+          dest : "build/#{appName}.min.css"  
+        ]
 
+    useminPrepare : 
+      html : 'server/index.html'
+      options:
+        dest: "build"
 
-  grunt.registerTask 'prepare-server', ['clean:server', 'coffee', 'compass', 'string-replace', 'haml', 'handlebars']
+  # ----------------------- #
+  # --------- TASKS ------- #
+  # ----------------------- #
+  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee', 'compass:build', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-lib',    ['clean:server', 'string-replace', 'haml:index']
+
   # Call these tasks from the command line
-  grunt.registerTask 'server', ['prepare-server', 'connect', 'open', 'watch']
+  grunt.registerTask 'server', ['compile-server', 'connect', 'open', 'watch']
+  grunt.registerTask 'build',  ['compile-build', 'uglify:build', 'cssmin']
+  grunt.registerTask 'lib',    ['compile-lib', 'useminPrepare', 'concat', 'uglify']
   grunt.registerTask 'default', ['server']
+  grunt.registerTask 'lib', ['useminPrepare', 'concat', 'uglify']

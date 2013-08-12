@@ -12,7 +12,13 @@
     %link{href: 'stylesheets/main.css', rel: 'stylesheet'}
   %body
     {{body}}  
-    %script{src: 'http://localhost:35729/livereload.js'}
+    / build:js(vendor/) lib.js
+    %script{src: 'bower_components/jquery/jquery.min.js'}
+    %script{src: 'bower_components/handlebars/handlebars.js'}
+    / endbuild
+    
     %script{src: 'javascripts/app.js'}
-    %script{src: 'jquery/jquery.min.js'}
+    %script{src: 'javascripts/handlebars-templates.js'}
+
+    %script{src: 'http://localhost:35729/livereload.js'}
 
