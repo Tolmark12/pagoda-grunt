@@ -23,7 +23,7 @@ module.exports = (grunt) ->
         tasks: ['haml:handlebars','handlebars']
       stage:
         files: ['stage/*.haml']
-        tasks: ['haml:index']
+        tasks: ['string-replace', 'haml:index']
       refresh: # refreshes the page
         files: ['server/index.html', 'server/javascripts/*.js', 'server/stylesheets/*.css']
         options:
