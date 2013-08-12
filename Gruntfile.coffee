@@ -1,7 +1,7 @@
 'use-strict'
 #utilties
 mountFolder = (connect, dir) ->
-  connect.static require("path").resolve(dir)
+  connect.stage require("path").resolve(dir)
 
 module.exports = (grunt) ->
   # require all grunt packages
@@ -21,8 +21,8 @@ module.exports = (grunt) ->
       handlebars:
         files: ['app/haml/**/*.haml']
         tasks: ['haml:handlebars','handlebars']
-      static:
-        files: ['static/*.haml']
+      stage:
+        files: ['stage/*.haml']
         tasks: ['haml:index']
       refresh: # refreshes the page
         files: ['server/index.html', 'server/javascripts/*.js', 'server/stylesheets/*.css']
@@ -82,10 +82,10 @@ module.exports = (grunt) ->
         options :
           replacements : [
             pattern : '{{body}}'
-            replacement : "<%= grunt.file.read('static/body.haml') %>"
+            replacement : "<%= grunt.file.read('stage/body.haml') %>"
           ]
         files :
-          'server/index.haml' : 'static/html.haml'
+          'server/index.haml' : 'stage/html.haml'
     
     # ----------------------- #
     # -------- SERVER ------- #
@@ -101,8 +101,10 @@ module.exports = (grunt) ->
           hostname: '0.0.0.0'
           middleware: (connect) ->
             [
-              mountFolder(connect, "server")
-              mountFolder(connect, "vendor")        
+              # each of these folders will be mounted at the root
+              mountFolder connect, 'server'
+              mountFolder connect, 'vendor'
+              mountFolder connect, 'app' # to get images, fonts, etc.
             ]
         
 
