@@ -14,7 +14,7 @@ Requirements
 Setup
 -----
 
-* Clone it:
+* Clone it
 
     ```git clone git@github.com:blunckr/pagoda-grunt.git *repo-name*```
 * Get in the directory
@@ -54,3 +54,5 @@ Structure
 * server - where compiled assets go to be served up
 * stage - haml and scripts that are only used in the staging environment, script should be minimal
 * vendor - 3rd party assets, should be able to get everything with bower
+
+*note - some of these directories (build, server) won't exists until you run grunt commands, because they are gitignored*

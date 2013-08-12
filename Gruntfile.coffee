@@ -13,7 +13,7 @@ module.exports = (grunt) ->
   grunt.initConfig
     watch:
       coffee: 
-        files: ['app/coffee/*.coffee']
+        files: ['app/coffee/**/*.coffee', 'stage/*.coffee']
         tasks: ['coffee']
       compass:
         files: ['app/scss/**/*.scss']

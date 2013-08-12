@@ -1,1 +1,1 @@
-namespace.obj = new namespace.ClassA()
+namespace.obj = new namespace.ClassA $ 'body'
