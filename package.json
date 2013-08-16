@@ -1,6 +1,6 @@
 {
   "name": "pagoda-grunt",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "grunt template",
   "main": "index.js",
   "dependencies": {},

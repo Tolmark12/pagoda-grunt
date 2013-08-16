@@ -62,7 +62,8 @@ module.exports = (grunt) ->
 
 
     haml: # haml -> html
-      handlebars:
+      handlebars: 
+        # have to do this complicated thing because this module is dumb and doesn't use grunts built in file matching
         files: grunt.file.expandMapping ['app/haml/**/*.haml'], 'server/handlebars'
           ext: '.html'
           rename: (dest, matchedSrcPath, options) ->
@@ -88,7 +89,7 @@ module.exports = (grunt) ->
             replacement : "<%= grunt.file.read('stage/body.haml') %>"
           ]
         files :
-          'server/index.haml' : 'stage/html.haml'
+          'server/index.haml' : 'stage/wrapper.haml'
     
     # ----------------------- #
     # -------- SERVER ------- #
@@ -118,28 +119,29 @@ module.exports = (grunt) ->
     # -------------------------- #
     # ---------- BUILD --------- #
     # -------------------------- #
-    uglify:
+    uglify: # minify js
       build:
         files: [
           src : ['server/javascripts/app.js', 'server/javascripts/handlebars-templates.js']
           dest: "build/#{appName}.min.js"
         ]
 
-    cssmin:
+    cssmin: 
       build:
         files: [
           src : 'server/stylesheets/main.css'
           dest : "build/#{appName}.min.css"  
         ]
 
+    # compile files specified in html.haml into one file, pretty cool
     useminPrepare : 
       html : 'server/index.html'
       options:
         dest: "build"
 
-  # ----------------------- #
-  # --------- TASKS ------- #
-  # ----------------------- #
+  # --------------------- #
+  # ------- TASKS ------- #
+  # --------------------- #
   grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
   grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'string-replace', 'haml', 'handlebars']
   grunt.registerTask 'compile-lib',    ['clean:server', 'coffee:app', 'string-replace', 'haml:index']

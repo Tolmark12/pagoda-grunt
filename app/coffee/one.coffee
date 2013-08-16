@@ -1,8 +1,8 @@
 class ClassA
   constructor  : ($el) ->
     @b = new ClassB()
-    $haml = handlebars['template'] {}
+    $haml = handlebars['template'] {val : "words"}
     $el.append $haml
 
-window.namespace = {} # break the scope so you can interact with it
+window.namespace = {} # break the scope like this
 namespace.ClassA = ClassA
