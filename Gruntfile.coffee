@@ -143,7 +143,7 @@ module.exports = (grunt) ->
   # ------- TASKS ------- #
   # --------------------- #
   grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
-  grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'haml:handlebars', 'handlebars']
   grunt.registerTask 'compile-lib',    ['clean:server', 'coffee:app', 'string-replace', 'haml:index']
 
   # Call these tasks from the command line
