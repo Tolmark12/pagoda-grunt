@@ -116,6 +116,11 @@ module.exports = (grunt) ->
       app:
         path: 'http://0.0.0.0:9000'
 
+    copy: # just copies files
+      css:
+        src: 'stage/stage.css'
+        dest: 'server/stylesheets/stage.css'
+
     # -------------------------- #
     # ---------- BUILD --------- #
     # -------------------------- #
@@ -142,7 +147,7 @@ module.exports = (grunt) ->
   # --------------------- #
   # ------- TASKS ------- #
   # --------------------- #
-  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'copy:css', 'string-replace', 'haml', 'handlebars']
   grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'haml:handlebars', 'handlebars']
   grunt.registerTask 'compile-lib',    ['clean:server', 'coffee:app', 'string-replace', 'haml:index']
 
