@@ -16,7 +16,7 @@ module.exports = (grunt) ->
         files: ['app/coffee/**/*.coffee', 'stage/*.coffee']
         tasks: ['coffee']
       compass:
-        files: ['app/scss/**/*.scss']
+        files: ['app/scss/**/*.scss', "stage/*.scss"]
         tasks: ['compass']
       handlebars:
         files: ['app/haml/**/*.haml']
@@ -51,6 +51,12 @@ module.exports = (grunt) ->
           imagesDir: 'app/images'
           fontsDir: 'app/fonts'
           specify: 'app/scss/main.scss' # import everything from here
+      server_stage:
+        options:
+          debugInfo: true 
+          sassDir: 'stage'
+          cssDir: 'server/stylesheets'
+          specify: 'stage/stage.scss'
       build: # don't include source map
         options:
           debugInfo: false
@@ -147,7 +153,7 @@ module.exports = (grunt) ->
   # --------------------- #
   # ------- TASKS ------- #
   # --------------------- #
-  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'copy:css', 'string-replace', 'haml', 'handlebars']
+  grunt.registerTask 'compile-server', ['clean:server', 'coffee', 'compass:server', 'compass:server_stage', 'copy:css', 'string-replace', 'haml', 'handlebars']
   grunt.registerTask 'compile-build',  ['clean:server', 'clean:build', 'coffee:app', 'compass:build', 'haml:handlebars', 'handlebars']
   grunt.registerTask 'compile-lib',    ['clean:server', 'coffee:app', 'string-replace', 'haml:index']
 
